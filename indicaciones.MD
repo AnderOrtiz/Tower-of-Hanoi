@@ -10,23 +10,18 @@
 
 ---
 
-## Integrante 2: Lógica y validaciones
-**Archivo a crear:** `backend/hanoi/juego.py` (más `tests/test_juego.py` si quiere).
+## Integrante 2: Lógica y validaciones ✅
+**Estado:** terminado. 10 pruebas propias pasando (20 en total con las del Integrante 1).
 
-**Qué debe hacer:**
-- Crear la clase `JuegoHanoi` con tres `Pila`: `origen`, `auxiliar`, `destino`. Para la torre inicial debe usar `construir_torre_inicial(n)`.
-- Implementar `mover(origen, destino)`, que valide y rechace con un mensaje claro en estos casos:
-  - Torre inexistente o entrada inválida (aceptar solo `"origen"`, `"auxiliar"`, `"destino"`).
-  - Origen igual a destino.
-  - Torre de origen vacía.
-  - Disco grande sobre uno pequeño (comparar `torre_origen.peek() > torre_destino.peek()`).
-- Si el movimiento es válido: `pop()` del origen y `push()` en el destino.
-- Devolver siempre un resultado uniforme, por ejemplo `{"ok": True/False, "mensaje": "..."}`.
-- Exponer un método `estado()` que devuelva `{"origen": [...], "auxiliar": [...], "destino": [...]}`, usando `a_lista()` o `torre_a_lista`.
+**Archivos:** `backend/hanoi/juego.py`, `backend/hanoi/tests/test_juego.py`
 
-**No debe:** tocar `pila.py`, `disco.py` ni `torre.py`, ni poner contador o victoria (eso es del Integrante 3).
-
-
+**Entregas para el equipo:**
+- Importar con `from hanoi.juego import JuegoHanoi`.
+- `JuegoHanoi(n)` expone `.origen`, `.auxiliar`, `.destino` (son `Pila`) y `.discos`.
+- `mover(origen, destino)` acepta solo `"origen"`, `"auxiliar"`, `"destino"` y devuelve `{"ok": bool, "mensaje": str}`.
+- `estado()` devuelve `{"origen": [3, 2, 1], "auxiliar": [], "destino": []}`: enteros, de base a tope.
+- No incluye contador, victoria ni reinicio (Integrante 3).
+- Un movimiento inválido nunca modifica las torres.
 
 ---
 
