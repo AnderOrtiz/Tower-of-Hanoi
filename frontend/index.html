@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Torres de Hanói</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- FONDO: bosque ilustrado con SVG + luciérnagas (se generan en app.js) -->
+  <div class="fondo" aria-hidden="true">
+    <svg class="bosque" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="cielo" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3aa37a" />
+          <stop offset=".55" stop-color="#1d6f52" />
+          <stop offset="1" stop-color="#0d3b30" />
+        </linearGradient>
+        <radialGradient id="luz" cx=".5" cy=".2" r=".65">
+          <stop offset="0" stop-color="#e4ffb0" stop-opacity=".6" />
+          <stop offset="1" stop-color="#e4ffb0" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+      <rect width="1600" height="900" fill="url(#cielo)" />
+      <rect width="1600" height="900" fill="url(#luz)" />
+
+      <!-- árboles lejanos -->
+      <g opacity=".55">
+        <g fill="#14574a">
+          <rect x="380" y="260" width="46" height="560" rx="10" />
+          <rect x="690" y="200" width="54" height="620" rx="10" />
+          <rect x="980" y="270" width="46" height="550" rx="10" />
+          <rect x="1230" y="230" width="50" height="590" rx="10" />
+        </g>
+        <g fill="#1d7a5f">
+          <circle cx="403" cy="250" r="95" /><circle cx="350" cy="300" r="70" /><circle cx="460" cy="300" r="70" />
+          <circle cx="717" cy="190" r="110" /><circle cx="650" cy="250" r="75" /><circle cx="785" cy="250" r="75" />
+          <circle cx="1003" cy="260" r="95" /><circle cx="945" cy="310" r="70" /><circle cx="1060" cy="310" r="70" />
+          <circle cx="1255" cy="220" r="100" /><circle cx="1195" cy="275" r="70" /><circle cx="1315" cy="275" r="70" />
+        </g>
+      </g>
+
+      <!-- troncos grandes a los lados -->
+      <g>
+        <path d="M-60 900 C 10 700 0 420 40 -20 L 250 -20 C 220 380 250 700 340 900 Z" fill="#5d3b1d" />
+        <path d="M60 900 C 90 700 80 420 110 -20 L 140 -20 C 130 400 150 700 190 900 Z" fill="#74492a" opacity=".7" />
+        <path d="M1660 900 C 1590 700 1600 420 1560 -20 L 1350 -20 C 1380 380 1350 700 1260 900 Z" fill="#5d3b1d" />
+        <path d="M1540 900 C 1510 700 1520 420 1490 -20 L 1460 -20 C 1470 400 1450 700 1410 900 Z" fill="#74492a" opacity=".7" />
+      </g>
+      <!-- copas oscuras arriba -->
+      <g fill="#0d4a35">
+        <circle cx="90" cy="20" r="190" /><circle cx="300" cy="-10" r="150" /><circle cx="520" cy="-40" r="130" />
+        <circle cx="1510" cy="20" r="190" /><circle cx="1300" cy="-10" r="150" /><circle cx="1080" cy="-40" r="130" />
+        <circle cx="800" cy="-70" r="140" />
+      </g>
+      <g fill="#14663f" opacity=".85">
+        <circle cx="170" cy="120" r="80" /><circle cx="1430" cy="120" r="80" /><circle cx="410" cy="70" r="70" /><circle cx="1190" cy="70" r="70" />
+      </g>
+
+      <!-- suelo -->
+      <path d="M0 800 Q 200 760 420 795 T 820 790 T 1220 785 T 1600 800 V 900 H 0 Z" fill="#2f8a3e" />
+      <path d="M0 850 Q 260 815 520 845 T 1050 842 T 1600 850 V 900 H 0 Z" fill="#1f6d2f" />
+
+      <!-- hongos -->
+      <g>
+        <rect x="196" y="812" width="22" height="40" rx="8" fill="#f4e6c6" />
+        <path d="M160 820 A 46 40 0 0 1 252 820 Z" fill="#d6402f" />
+        <circle cx="190" cy="800" r="6" fill="#fff" /><circle cx="218" cy="790" r="7" fill="#fff" /><circle cx="236" cy="808" r="5" fill="#fff" />
+        <rect x="1400" y="822" width="18" height="34" rx="7" fill="#f4e6c6" />
+        <path d="M1368 830 A 40 34 0 0 1 1450 830 Z" fill="#e0653a" />
+        <circle cx="1392" cy="816" r="5" fill="#fff" /><circle cx="1418" cy="810" r="6" fill="#fff" /><circle cx="1436" cy="822" r="4" fill="#fff" />
+      </g>
+    </svg>
+    <div class="rayos"></div>
+    <div class="luciernagas" id="luciernagas"></div>
+  </div>
+
+  <!-- MENÚ INICIAL -->
+  <section id="pantalla-menu" class="pantalla activa">
+    <div class="menu">
+      <h1 class="logo">
+        <span class="arriba">Torres de</span>
+        <span class="grande">Hanói</span>
+      </h1>
+
+      <div class="tablon">
+        <h2>¿Cuántos discos?</h2>
+        <div id="selector-discos" class="fichas" role="radiogroup" aria-label="Cantidad de discos">
+          <button class="ficha" data-n="3">3</button>
+          <button class="ficha activa" data-n="4">4</button>
+          <button class="ficha" data-n="5">5</button>
+          <button class="ficha" data-n="6">6</button>
+          <button class="ficha" data-n="7">7</button>
+          <button class="ficha" data-n="8">8</button>
+        </div>
+        <p id="nivel" class="nivel">Nivel: Fácil</p>
+      </div>
+
+      <button id="btn-jugar" class="tabla azul grande inclina-a">Jugar</button>
+      <button id="btn-reglas" class="tabla verde inclina-b">Reglas</button>
+      <p id="msg-menu" class="mensaje error oculto"></p>
+    </div>
+  </section>
+
+  <!-- REGLAS -->
+  <section id="pantalla-reglas" class="pantalla">
+    <div class="menu">
+      <div class="tablon ancho">
+        <h2 class="titulo-panel">Reglas del juego</h2>
+        <ul class="reglas">
+          <li>Mueve <b>un disco a la vez</b>.</li>
+          <li>Solo puedes tomar el disco de <b>arriba</b> de una torre.</li>
+          <li>Nunca pongas un disco <b>grande sobre uno pequeño</b>.</li>
+          <li>Gana quien pasa todos los discos a la torre <b>Destino</b>.</li>
+          <li>Cómo jugar: toca la torre de origen y luego la de destino, o usa las teclas <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd>.</li>
+        </ul>
+      </div>
+      <button id="btn-volver-reglas" class="tabla naranja inclina-a">Volver</button>
+    </div>
+  </section>
+
+  <!-- JUEGO -->
+  <section id="pantalla-juego" class="pantalla">
+    <header class="barra">
+      <div class="cartel"><span>Movimientos</span><strong id="contador">0</strong></div>
+      <div class="cartel"><span>Mínimo</span><strong id="minimo">0</strong></div>
+      <div class="cartel"><span>Discos</span><strong id="cant-discos">0</strong></div>
+      <div class="acciones">
+        <button id="btn-sonido" class="tabla mini naranja" title="Sonido">🔊</button>
+        <button id="btn-reiniciar" class="tabla mini verde">Reiniciar</button>
+        <button id="btn-menu" class="tabla mini rojo">Menú</button>
+      </div>
+    </header>
+
+    <p id="mensaje" class="mensaje">Elige una torre de origen.</p>
+
+    <main id="tablero" class="tablero">
+      <div class="torre" data-torre="origen" tabindex="0">
+        <div class="zona"><div class="poste"></div><div class="discos"></div></div>
+        <div class="base"></div>
+        <div class="nombre"><kbd>1</kbd> Origen</div>
+      </div>
+      <div class="torre" data-torre="auxiliar" tabindex="0">
+        <div class="zona"><div class="poste"></div><div class="discos"></div></div>
+        <div class="base"></div>
+        <div class="nombre"><kbd>2</kbd> Auxiliar</div>
+      </div>
+      <div class="torre" data-torre="destino" tabindex="0">
+        <div class="zona"><div class="poste"></div><div class="discos"></div></div>
+        <div class="base"></div>
+        <div class="nombre"><kbd>3</kbd> Destino</div>
+      </div>
+    </main>
+  </section>
+
+  <!-- VICTORIA -->
+  <section id="pantalla-victoria" class="pantalla">
+    <canvas id="confeti"></canvas>
+    <div class="menu victoria">
+      <div class="tablon ancho">
+        <h2 class="titulo-victoria">¡Nivel superado!</h2>
+        <div id="estrellas" class="estrellas" aria-label="Calificación"></div>
+        <p id="rango-victoria" class="rango"></p>
+        <p id="resumen-victoria" class="resumen"></p>
+      </div>
+      <button id="btn-otra" class="tabla azul grande inclina-a">Jugar otra vez</button>
+      <button id="btn-menu-victoria" class="tabla naranja inclina-b">Menú</button>
+    </div>
+  </section>
+
+  <script src="api.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
